@@ -1,0 +1,993 @@
+
+<!DOCTYPE html>
+<html class="scripts-not-loaded" dir="ltr"   lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Assignment 3: Introduction to Spark</title>
+  <!--[if lte IE 9]> <meta http-equiv=refresh content="0; URL=/ie-9-is-not-supported.html" /> <![endif]-->
+  
+  <link rel="preload" href="https://du11hjcvx0uqb.cloudfront.net/dist/fonts/lato/latin/LatoLatin-Regular-3cd3657802.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="shortcut icon" type="image/x-icon" href="https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico" />
+  <link rel="apple-touch-icon" href="https://du11hjcvx0uqb.cloudfront.net/dist/images/apple-touch-icon-585e5d997d.png" />
+  
+  <link rel="stylesheet" media="all" href="https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/308565912cd158bfb6ce5990a41b6af6/variables-750d72b9d3e5d522f965bf904110c132.css" />
+  <link rel="stylesheet" media="all" href="https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/new_styles_normal_contrast/bundles/common-834fb5c75c.css" />
+  <script>
+//<![CDATA[
+
+!function(){
+  function get(u){document.write('<scr'+'ipt src="'+ u +'"></sc'+'ript>')}
+  var o,s,v;
+  if (!(window.Promise && Object.assign && Object.values && [].find && [].includes && (o={},s=Symbol(),v={},o[s]=v,o[s]===v) && (function f(){}).bind().name==='bound f')) {
+    get("https://du11hjcvx0uqb.cloudfront.net/dist/ie11-polyfill-8ce5cd9c92.js");
+  }
+  window.fetch || get("https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.4/fetch.min.js");
+}();
+      
+//]]>
+</script>
+  <script src="https://du11hjcvx0uqb.cloudfront.net/dist/lato-fontfaceobserver-155484df40.js" async="async"></script>
+  
+  <meta name="apple-itunes-app" content="app-id=480883488" />
+<link rel="manifest" href="/web-app-manifest/manifest.json" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#800000">
+  <link rel="stylesheet" media="all" href="https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/new_styles_normal_contrast/bundles/assignments-880158796a.css" />
+<link rel="stylesheet" media="all" href="https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/new_styles_normal_contrast/bundles/tinymce-cfde159ef1.css" />
+<link rel="stylesheet" media="all" href="https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/new_styles_normal_contrast/bundles/learning_outcomes-f40ec34c4b.css" />
+  
+  <link rel="stylesheet" media="all" href="https://instructure-uploads.s3.amazonaws.com/account_23490000000000001/attachments/731607/ek.css" />
+  <script>
+    function _earlyClick(e){
+      var c = e.target
+      while (c && c.ownerDocument) {
+        if (c.getAttribute('href') == '#' || c.getAttribute('data-method')) {
+          e.preventDefault()
+          (_earlyClick.clicks = _earlyClick.clicks || []).push(c)
+          break
+        }
+        c = c.parentNode
+      }
+    }
+    document.addEventListener('click', _earlyClick)
+  </script>
+  <script src="https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/308565912cd158bfb6ce5990a41b6af6/variables-750d72b9d3e5d522f965bf904110c132.js" defer="defer"></script>
+  <script src="https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/vendor.bundle-499f2a368c.js" defer="defer"></script>
+<script src="https://du11hjcvx0uqb.cloudfront.net/dist/timezone/America/Chicago-72c98a0d42.js" defer="defer"></script>
+<script src="https://du11hjcvx0uqb.cloudfront.net/dist/timezone/en_US-80a0ce259b.js" defer="defer"></script>
+<script src="https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/appBootstrap.bundle-86219cc569.js" defer="defer"></script>
+<script src="https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/common.bundle-f6a1e684ee.js" defer="defer"></script>
+<script src="https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/assignment_show.bundle-d2d78eb145.js" defer="defer"></script>
+<script src="https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/submit_assignment.bundle-9bb6a0a9af.js" defer="defer"></script>
+<script src="https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/edit_rubric.bundle-85f0278943.js" defer="defer"></script>
+</head>
+
+<body class="with-left-side course-menu-expanded with-right-side assignments primary-nav-expanded context-course_17219 lato-font-not-loaded-yet">
+
+<noscript>
+  <div role="alert" class="ic-flash-static ic-flash-error">
+    <div class="ic-flash__icon" aria-hidden="true">
+      <i class="icon-warning"></i>
+    </div>
+    <h1>You need to have JavaScript enabled in order to access this site.</h1>
+  </div>
+</noscript>
+
+
+
+
+
+<ul id="flash_message_holder"></ul>
+<div id="flash_screenreader_holder"></div>
+
+<div id="application" class="ic-app">
+  
+  <header id="header" class="ic-app-header no-print ">
+    <a href="#content" id="skip_navigation_link">Skip To Content</a>
+      <div role="region" class="ic-app-header__main-navigation" aria-label="Global Navigation">
+        <div class="ic-app-header__logomark-container">
+          <a href="https://canvas.uchicago.edu/" class="ic-app-header__logomark">
+            <span class="screenreader-only">Dashboard</span>
+          </a>
+        </div>
+        <ul id="menu" class="ic-app-header__menu-list">
+            <li class="menu-item ic-app-header__menu-list-item ">
+              <a id="global_nav_profile_link" href="/profile" class="ic-app-header__menu-list-link">
+                <div class="menu-item-icon-container" aria-hidden="true">
+                  <div class="ic-avatar ">
+                    <img src="https://canvas.uchicago.edu/images/messages/avatar-50.png" alt="Saptarshi Ghose" />
+                  </div>
+                </div>
+                <div class="menu-item__text">
+                  Account
+                </div>
+              </a>
+            </li>
+          <li class="ic-app-header__menu-list-item ">
+            <a id="global_nav_dashboard_link" href="https://canvas.uchicago.edu/" class="ic-app-header__menu-list-link">
+              <div class="menu-item-icon-container" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--dashboard" version="1.1" x="0" y="0" viewBox="0 0 280 200" enable-background="new 0 0 280 200" xml:space="preserve"><path d="M273.09,180.75H197.47V164.47h62.62A122.16,122.16,0,1,0,17.85,142a124,124,0,0,0,2,22.51H90.18v16.29H6.89l-1.5-6.22A138.51,138.51,0,0,1,1.57,142C1.57,65.64,63.67,3.53,140,3.53S278.43,65.64,278.43,142a137.67,137.67,0,0,1-3.84,32.57ZM66.49,87.63,50.24,71.38,61.75,59.86,78,76.12Zm147,0L202,76.12l16.25-16.25,11.51,11.51ZM131.85,53.82v-23h16.29v23Zm15.63,142.3a31.71,31.71,0,0,1-28-16.81c-6.4-12.08-15.73-72.29-17.54-84.25a8.15,8.15,0,0,1,13.58-7.2c8.88,8.21,53.48,49.72,59.88,61.81a31.61,31.61,0,0,1-27.9,46.45ZM121.81,116.2c4.17,24.56,9.23,50.21,12,55.49A15.35,15.35,0,1,0,161,157.3C158.18,152,139.79,133.44,121.81,116.2Z" /></svg>
+
+              </div>
+              <div class="menu-item__text">Dashboard</div>
+            </a>
+          </li>
+          <li class="menu-item ic-app-header__menu-list-item ic-app-header__menu-list-item--active">
+            <a id="global_nav_courses_link" href="/courses" class="ic-app-header__menu-list-link">
+              <div class="menu-item-icon-container" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--courses" version="1.1" x="0" y="0" viewBox="0 0 280 259" enable-background="new 0 0 280 259" xml:space="preserve"><path d="M73.31,198c-11.93,0-22.22,8-24,18.73a26.67,26.67,0,0,0-.3,3.63v.3a22,22,0,0,0,5.44,14.65,22.47,22.47,0,0,0,17.22,8H200V228.19h-134V213.08H200V198Zm21-105.74h90.64V62H94.3ZM79.19,107.34V46.92H200v60.42Zm7.55,30.21V122.45H192.49v15.11ZM71.65,16.71A22.72,22.72,0,0,0,49,39.36V190.88a41.12,41.12,0,0,1,24.32-8h157V16.71ZM33.88,39.36A37.78,37.78,0,0,1,71.65,1.6H245.36V198H215.15v45.32h22.66V258.4H71.65a37.85,37.85,0,0,1-37.76-37.76Z"/></svg>
+
+              </div>
+              <div class="menu-item__text">
+                Courses
+              </div>
+            </a>
+          </li>
+            <li class="menu-item ic-app-header__menu-list-item ">
+              <a id="global_nav_groups_link" href="/groups" class="ic-app-header__menu-list-link">
+                <div class="menu-item-icon-container" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--groups" viewBox="0 0 200 135"><path d="M134.5 129.4c0-1.1 0-19.8-6.2-31.1-4.5-8.5-16.4-12.4-35-19.2-1.7-.6-3.4-1.1-5.1-1.7v-8.5c5.6-5.1 8.5-12.4 8.5-20.3V29.4C96.6 13 83.6 0 67.2 0S37.9 13 37.9 29.4v19.2c0 7.3 3.4 14.7 8.5 20.3v8.5c-1.7.6-3.4 1.1-5.1 1.7-18.6 6.2-30.5 10.7-35 19.2C0 109.6 0 128.8 0 129.4c0 3.4 2.3 5.6 5.6 5.6h123.7c3.5 0 5.7-2.3 5.2-5.6zm-123.2-5.7c.6-5.6 1.7-14.7 3.4-19.8C17 98.8 30 94.3 43.5 89.8c2.8-1.1 5.6-2.3 9-3.4 2.3-.6 4-2.8 4-5.1V66.7c0-1.7-.6-3.4-1.7-4.5-4-3.4-6.2-8.5-6.2-13.6V29.4c0-10.2 7.9-18.1 18.1-18.1s18.1 7.9 18.1 18.1v19.2c0 5.1-2.3 10.2-6.2 13.6-1.1 1.1-1.7 2.8-1.7 4.5v14.7c0 2.3 1.7 4.5 4 5.1 2.8 1.1 6.2 2.3 9 3.4 13.6 5.1 26.6 9.6 28.8 14.1 2.8 5.1 4 13.6 4.5 19.8H11.3zM196 79.1c-2.8-6.2-11.3-9.6-22.6-13.6l-1.7-.6v-3.4c4.5-4 6.8-9.6 6.8-15.8V35c0-12.4-9.6-22-22-22s-22 10.2-22 22v10.7c0 6.2 2.3 11.9 6.8 15.8V65l-1.7.6c-7.3 2.8-13 4.5-16.9 7.3-1.7 1.1-2.3 2.8-2.3 5.1.6 1.7 1.7 3.4 3.4 4.5 7.9 4 12.4 7.3 14.1 10.7 2.3 4.5 4 10.2 5.1 18.1.6 2.3 2.8 4.5 5.6 4.5h45.8c3.4 0 5.6-2.8 5.6-5.1 0-3.9 0-24.3-4-31.6zm-42.9 25.4c-1.1-6.8-2.8-12.4-5.1-16.9-1.7-4-5.1-6.8-9.6-10.2 1.7-1.1 3.4-1.7 5.1-2.3l5.6-2.3c1.7-.6 3.4-2.8 3.4-5.1v-9.6c0-1.7-.6-3.4-2.3-4.5-2.8-1.7-4.5-5.1-4.5-8.5V34.5c0-6.2 4.5-10.7 10.7-10.7s10.7 5.1 10.7 10.7v10.7c0 3.4-1.7 6.2-4.5 8.5-1.1 1.1-2.3 2.8-2.3 4.5v10.2c0 2.3 1.1 4.5 3.4 5.1l5.6 2.3c6.8 2.3 15.3 5.6 16.4 7.9 1.7 2.8 2.8 12.4 2.8 20.9h-35.4z"/></svg>
+
+                </div>
+                <div class="menu-item__text">
+                  Groups
+                </div>
+              </a>
+            </li>
+          <li class="menu-item ic-app-header__menu-list-item ">
+            <a id="global_nav_calendar_link" href="/calendar" class="ic-app-header__menu-list-link">
+              <div class="menu-item-icon-container" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--calendar" version="1.1" x="0" y="0" viewBox="0 0 280 280" enable-background="new 0 0 280 280" xml:space="preserve"><path d="M197.07,213.38h16.31V197.07H197.07Zm-16.31,16.31V180.76h48.92v48.92Zm-48.92-16.31h16.31V197.07H131.85Zm-16.31,16.31V180.76h48.92v48.92ZM66.62,213.38H82.93V197.07H66.62ZM50.32,229.68V180.76H99.24v48.92Zm146.75-81.53h16.31V131.85H197.07Zm-16.31,16.31V115.54h48.92v48.92Zm-48.92-16.31h16.31V131.85H131.85Zm-16.31,16.31V115.54h48.92v48.92ZM66.62,148.15H82.93V131.85H66.62ZM50.32,164.46V115.54H99.24v48.92ZM34,262.29H246V82.93H34ZM246,66.62V42.16A8.17,8.17,0,0,0,237.84,34H213.38v8.15a8.15,8.15,0,1,1-16.31,0V34H82.93v8.15a8.15,8.15,0,0,1-16.31,0V34H42.16A8.17,8.17,0,0,0,34,42.16V66.62Zm-8.15-48.92a24.49,24.49,0,0,1,24.46,24.46V278.6H17.71V42.16A24.49,24.49,0,0,1,42.16,17.71H66.62V9.55a8.15,8.15,0,0,1,16.31,0v8.15H197.07V9.55a8.15,8.15,0,1,1,16.31,0v8.15Z"/></svg>
+
+              </div>
+              <div class="menu-item__text">
+                Calendar
+              </div>
+            </a>
+          </li>
+          <li class="menu-item ic-app-header__menu-list-item ">
+            <a id="global_nav_conversations_link" href="/conversations" class="ic-app-header__menu-list-link">
+              <div class="menu-item-icon-container" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--inbox" version="1.1" x="0" y="0" viewBox="0 0 280 280" enable-background="new 0 0 280 280" xml:space="preserve"><path d="M91.72,120.75h96.56V104.65H91.72Zm0,48.28h80.47V152.94H91.72Zm0-96.56h80.47V56.37H91.72Zm160.94,34.88H228.52V10.78h-177v96.56H27.34A24.17,24.17,0,0,0,3.2,131.48V244.14a24.17,24.17,0,0,0,24.14,24.14H252.66a24.17,24.17,0,0,0,24.14-24.14V131.48A24.17,24.17,0,0,0,252.66,107.34Zm0,16.09a8.06,8.06,0,0,1,8,8v51.77l-32.19,19.31V123.44ZM67.58,203.91v-177H212.42v177ZM27.34,123.44H51.48v79.13L19.29,183.26V131.48A8.06,8.06,0,0,1,27.34,123.44ZM252.66,252.19H27.34a8.06,8.06,0,0,1-8-8V202l30,18H230.75l30-18v42.12A8.06,8.06,0,0,1,252.66,252.19Z"/></svg>
+
+                <span class="menu-item__badge" style="display: none">0</span>
+              </div>
+              <div class="menu-item__text">
+                Inbox
+              </div>
+            </a>
+          </li>
+            
+
+
+          <li class="ic-app-header__menu-list-item">
+           <a id="global_nav_help_link" class="ic-app-header__menu-list-link" data-track-category="help system" data-track-label="help button" href="http://help.instructure.com/">
+              <div class="menu-item-icon-container" role="presentation">
+                <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg menu-item__icon svg-icon-help" version="1.1" x="0" y="0" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve" fill="currentColor"><path d="M100,127.88A11.15,11.15,0,1,0,111.16,139,11.16,11.16,0,0,0,100,127.88Zm8.82-88.08a33.19,33.19,0,0,1,23.5,23.5,33.54,33.54,0,0,1-24,41.23,3.4,3.4,0,0,0-2.74,3.15v9.06H94.42v-9.06a14.57,14.57,0,0,1,11.13-14,22.43,22.43,0,0,0,13.66-10.27,22.73,22.73,0,0,0,2.31-17.37A21.92,21.92,0,0,0,106,50.59a22.67,22.67,0,0,0-19.68,3.88,22.18,22.18,0,0,0-8.65,17.64H66.54a33.25,33.25,0,0,1,13-26.47A33.72,33.72,0,0,1,108.82,39.8ZM100,5.2A94.8,94.8,0,1,0,194.8,100,94.91,94.91,0,0,0,100,5.2m0,178.45A83.65,83.65,0,1,1,183.65,100,83.73,83.73,0,0,1,100,183.65" transform="translate(-5.2 -5.2)"/></svg>
+
+              </div>
+              <div class="menu-item__text">
+                Help
+              </div>
+</a>          </li>
+        </ul>
+      </div>
+      <div class="ic-app-header__secondary-navigation">
+        <ul class="ic-app-header__menu-list">
+          <li class="menu-item ic-app-header__menu-list-item">
+            <button
+              id="primaryNavToggle"
+              class="ic-app-header__menu-list-link ic-app-header__menu-list-link--nav-toggle"
+              aria-label="Minimize global navigation"
+              title="Minimize global navigation"
+            >
+              <div class="menu-item-icon-container" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--navtoggle" version="1.1" x="0" y="0" width="40" height="32" viewBox="0 0 40 32" xml:space="preserve">
+  <path d="M39.5,30.28V2.48H37.18v27.8Zm-4.93-13.9L22.17,4,20.53,5.61l9.61,9.61H.5v2.31H30.14l-9.61,9.61,1.64,1.64Z"/>
+</svg>
+
+              </div>
+            </button>
+          </li>
+        </ul>
+      </div>
+    <div id="global_nav_tray_container"></div>
+  </header>
+
+
+  <div id="instructure_ajax_error_box">
+    <div style="text-align: right; background-color: #fff;"><a href="#" class="close_instructure_ajax_error_box_link">Close</a></div>
+    <iframe id="instructure_ajax_error_result" src="about:blank" style="border: 0;" title="Error"></iframe>
+  </div>
+
+  
+
+  <div id="wrapper" class="ic-Layout-wrapper">
+      <div class="ic-app-nav-toggle-and-crumbs no-print">
+          <button type="button" id="courseMenuToggle" class="Button Button--link ic-app-course-nav-toggle" aria-live="polite" aria-label="Hide Courses Navigation Menu" title="Hide Courses Navigation Menu">
+            <i class="icon-hamburger" aria-hidden="true"></i>
+          </button>
+          <div class="ic-app-crumbs">
+        <nav id="breadcrumbs" role="navigation" aria-label="breadcrumbs"><ul><li class="home"><a href="/"><span class="ellipsible">      <i class="icon-home"
+         title="My Dashboard">
+        <span class="screenreader-only">My Dashboard</span>
+      </i>
+</span></a></li><li><a href="/courses/17219"><span class="ellipsible">CAPP 30525 1 Large Scale Data Methods</span></a></li><li><a href="/courses/17219/assignments"><span class="ellipsible">Assignments</span></a></li><li><a href="https://canvas.uchicago.edu/courses/17219/assignments/135472"><span class="ellipsible">Assignment 3: Introduction to Spark</span></a></li></ul></nav>
+        </div>
+      </div>
+    <div id="main" class="ic-Layout-columns">
+        <div class="ic-Layout-watermark"></div>
+        <div id="left-side"
+          class="ic-app-course-menu list-view"
+          style="display: block"
+          >
+              <span id="section-tabs-header-subtitle" class="ellipsis">2018.04</span>
+            <nav role="navigation" aria-label="Courses Navigation Menu"><ul id="section-tabs"><li class="section"><a href="/courses/17219" title="Home" class="home">Home</a></li><li class="section"><a href="/courses/17219/announcements" title="Announcements" class="announcements">Announcements</a></li><li class="section"><a href="/courses/17219/assignments/syllabus" title="Syllabus" class="syllabus">Syllabus</a></li><li class="section"><a href="/courses/17219/modules" title="Modules" class="modules">Modules</a></li><li class="section"><a href="/courses/17219/assignments" title="Assignments" class="assignments active">Assignments</a></li><li class="section"><a href="/courses/17219/collaborations" title="Collaborations" class="collaborations">Collaborations</a></li><li class="section"><a href="/courses/17219/users" title="People" class="people">People</a></li><li class="section"><a href="/courses/17219/grades" title="Grades" class="grades">Grades</a></li><li class="section"><a href="/courses/17219/external_tools/1129" title="Media Gallery" class="context_external_tool_1129">Media Gallery</a></li><li class="section"><a href="/courses/17219/external_tools/1131" title="My Media" class="context_external_tool_1131">My Media</a></li></ul></nav>
+        </div>
+      <div id="not_right_side" class="ic-app-main-content">
+        <div id="content-wrapper" class="ic-Layout-contentWrapper">
+          
+          <div id="content" class="ic-Layout-contentMain" role="main">
+            
+
+
+
+
+
+<div id="assignment_show" class="assignment content_underline_links">
+    <!--Student View-->
+    <div class='assignment-title'>
+      <div class='title-content'>
+        <h1 class="title">
+          Assignment 3: Introduction to Spark
+        </h1>
+      </div>
+      <div class='assignment-buttons'>
+        
+
+        <a role="button" class="Button Button--primary submit_assignment_link " href="#">Re-submit Assignment</a>
+      </div>
+    </div>
+    <ul class='student-assignment-overview'>
+      <li>
+        <span class='title'>Due</span>
+        <span class='value'>
+          <span class="date_text">
+                <span class="display_date">Nov 11, 2018</span> by 
+                <span class="display_time">11:59pm</span>
+          </span>
+        </span>
+      </li>
+      <li>
+        <span class='title'>Points</span>
+        <span class='value'>10</span>
+      </li>
+        <li>
+          <span class='title'>Submitting</span>
+          <span class='value'>a file upload</span>
+        </li>
+      
+
+      <div class="clear"></div>
+    </ul>
+
+  <div class="clear"></div>
+
+
+  <div class="clear"></div>
+
+  <div class="description user_content student-version"><p><strong>Relevant Reading</strong>: Spark. The Definitive Guide, Chapters 4-8</p>
+<p> </p>
+<p><strong>Task 1.</strong> Write an AWS Command Line call to aws emr create-cluster, that:</p>
+<ul>
+<li>Launches a cluster of 3 m5.xlarge machines (one name, two worker nodes). Please note this should cost you 75 cents per hour (25 cents per machine), and is prorated by the second (you are not charged for 'stopped' or 'terminated' instances).</li>
+<li>Installs the applications of Spark, Ganglia, and JupyterHub;</li>
+<li>Adds an additional name node security group opening pertinent ports (JupyterHub - which is 9443, SSH, <a href="https://spark.apache.org/docs/latest/monitoring.html">Spark History Server</a>);</li>
+<li>Uses a key-pair for secure access;</li>
+<li>Runs a bootstrap script that you have stored in AWS S3 (code for that bootstrap script is below).</li>
+</ul>
+<pre>#!/bin/bash<br>sudo easy_install-3.4 pip<br>sudo /usr/local/bin/pip3 install nltk scipy scikit-learn pandas matplotlib</pre>
+<p> </p>
+<p><strong>Important Logistical Notes for Working in AWS EMR:</strong></p>
+<ul>
+<li>You <strong>MUST</strong> set your IP address as the only one that can access the ports you open for this assignment. Hacking of AWS EMR clusters has been rampant and immediate, and will prevent you from working on the cluster (and will you get you warning emails from Amazon).</li>
+<li>Jupyter notebooks are saved by default on the name node, which is ephemeral storage and will be gone when you close your cluster. For this reason, you <strong>MUST</strong> download your notebooks between cluster launches/shutdown. You can do this by selecting 'Download As' and using the `.ipynb` format, which you can then easily upload back into JupyterHub in your next cluster.</li>
+</ul>
+<p> </p>
+<p><strong>Task 2.</strong>  Perform the following operations using PySpark (unless Spark SQL is explicitly called for) - note that all these functions must be sensible data manipulation and analysis, meaning you must understand the data you are analyzing. </p>
+<ul>
+<li>Use the SparkSession.builder to set
+<ul>
+<li>spark.executor.instances to 4</li>
+<li>spark.executor.memory to '6G'</li>
+<li>spark.executor.cores and 2</li>
+</ul>
+</li>
+<li>Load in all three csv files into Spark;</li>
+<li>Alter column names for all dataframes to replace `.` with `_`</li>
+</ul>
+<pre>newColList = list((col.replace('.', '_') for col in df.columns))<br>for oldCol, newCol in zip(df.columns, newColList):<br>      df = df.withColumnRenamed(oldCol, newCol)</pre>
+<ul>
+<li>Merge three (of the four possible) dataframes together;</li>
+<li>Write the same grouped aggregation in PySpark and then again in Spark SQL. Run .explain() on the resulting aggregations - what does this tell you about the plans for the two dataframes?</li>
+<li>Run a windowing aggregation;</li>
+<li>Run a User-Defined-Function (UDF), using Python's nltk package to analyze the text data in the Congressional Text dataframe.</li>
+<li>Collect a sample or aggregation of the data to the name node as a Pandas dataframe and print some of the rows of the collected dataframe.
+<ul>
+<li>
+<p><span style="text-decoration: line-through;">Create a visualization of that data with matplotlib (or another package of your choosing, if you want to add that installation to the bootstrap script). </span><span style="font-size: 1rem;">The graphing libraries (matplotlib, seaborn, bokeh) are being problematic in JupyterHub, so you can skip this.</span></p>
+</li>
+</ul>
+</li>
+</ul>
+<p> </p>
+<p><strong>Task 3. </strong>Conceptual Analysis - Identify one example of each of the following in your code, and describe how you know this  (<em>hint: you may want to use </em><span><em>setJobGroup</em>, which will help you identify outcomes in the Spark History Server from specific code run):</span></p>
+<ul>
+<li>One shuffle between two stages;</li>
+<li>One narrow transformation;</li>
+<li>One wide transformation; </li>
+<li>For one Spark <strong>job</strong>, use the DAG visualization in the Spark History app to examine the tasks and stages, then explain in detail (include a screenshot of the DAG);</li>
+<li>Check the storage level of your dataframe. What happens if you checkpoint the data?</li>
+</ul>
+<p> </p>
+<p><strong>Data Documentation: Database on Ideology, Money in Politics, and Elections (DIME)</strong></p>
+<p>The Database on Ideology, Money in Politics, and Elections (DIME) is intended as a general resource for the study of campaign finance and ideology in American politics. The database was developed as part of the project on Ideology in the Political Marketplace, which is an on-going effort to perform a comprehensive ideological mapping of political elites, interest groups, and donors using the common-space CFscore scaling methodology (Bonica 2014). Constructing the database required a large-scale effort to compile, clean, and process data on contribution records, candidate characteristics, and election outcomes from various sources. The resulting database contains over 130 million political contributions made by individuals and organizations to local, state, and federal elections spanning a period from 1979 to 2014 (dime_recipients_all_1979_2014.csv). A corresponding database of candidates and committees provides additional information on state and federal elections.</p>
+<p> </p>
+<p>Full Data documentation: <a href="https://data.stanford.edu/dime">https://data.stanford.edu/dime</a> and <a href="https://data.stanford.edu/dime-plus">https://data.stanford.edu/dime-plus</a> and you can download the DIME Data Documentation here: <a class="instructure_file_link" title="dime_codebook_v2.pdf" href="/courses/17219/files/1854518/download?verifier=DomdZDUTZLz3V0im01P09hfYJsSnIv8WaMBQRNKc&amp;wrap=1" data-api-endpoint="https://canvas.uchicago.edu/api/v1/courses/17219/files/1854518" data-api-returntype="File">dime_codebook_v2.pdf </a>and <a class="instructure_file_link" title="dime_plus_codebook.pdf" href="/courses/17219/files/1916260/download?verifier=YWuD7wHV30aJ0vGrCWRhQGwcIv5p42G51bVHnqQe&amp;wrap=1" data-api-endpoint="https://canvas.uchicago.edu/api/v1/courses/17219/files/1916260" data-api-returntype="File">dime_plus_codebook.pdf</a></p>
+<p> </p>
+<p>I have made all the data available in CSV format, here:</p>
+<pre>s3://lsdm-emr-util/lsdm-data/dime_recipients_all_1979_2014.csv (120MB)<br>s3://lsdm-emr-util/lsdm-data/vote_db.csv (172MB)<br>s3://lsdm-emr-util/lsdm-data/text_db.csv.gz (993MB)<br>s3://lsdm-emr-util/lsdm-data/bills_db.csv (2MB)</pre>
+<p> </p>
+<p>Note: You can read gzipped csvs into Spark with spark.read.csv("filepath/filename.csv.gz") just like unzipped csv files.</p>
+<p><strong>Congressional Text:</strong> (text_db.csv.gz) A table of text documents from the Congressional Record, which contains transcripts of all proceedings, floor debates, and extensions of remarks for Congress. The text corpus was scraped from the GPO’s Federal Digital System (FDsys) before being parsed into separate documents. Each document can be linked to either a candidate in DIME or a bill or amendment contained in bill_db.csv.</p>
+<p><strong>Congressional Votes:</strong> (vote_db.csv) A table of Congressional roll call vote choices. Each row records an individual legislator’s vote on a specified roll call.</p>
+<div>
+<div>
+<div>
+<div>
+<p><strong>Congressional Bills and Amendments:</strong><span> </span>(bills_db.csv) A table of bills and amendments introduced to Congress. Each row lists the name, unique identifier, and description of the bill alongside the list of sponsors and cosponsors.</p>
+</div>
+</div>
+</div>
+</div></div>
+
+
+  <div style="display: none;">
+    <span class="timestamp">1542002399</span>
+    <span class="due_date_string">11/11/2018</span>
+    <span class="due_time_string">11:59pm</span>
+  </div>
+</div>
+
+
+  
+<div style="display: none;" id="submit_assignment" data-context_code="course_17219" data-asset_string="assignment_135472">
+  <div class="content" id="submit_assignment_tabs">
+    <ul>
+        <li><a href="#submit_online_upload_form" class="submit_online_upload_option">File Upload</a></li>
+        <li><a href="#submit_google_doc_form" class="submit_online_url_option">Google Doc</a></li>
+        <li><a href="#submit_from_external_tool_form_172"
+          class="external-tool"
+          data-id="172"
+          data-name="Box">Box</a></li>
+    </ul>
+      
+<form id="submit_online_upload_form" class="submit_assignment_form" enctype="multipart/form-data" action="/courses/17219/assignments/135472/submissions" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="CHxBC9J9nbd40A1RBc3iPs107hL1OBn05treVPGuQy5vDQ4zmBrT0gmTdQFI/JZLpl+dRMB5U4a0v+cele0aSQ==" />
+    <input value="online_upload" type="hidden" name="submission[submission_type]" id="submission_submission_type" />
+    <input value="" id="submission_attachment_ids" type="hidden" name="submission[attachment_ids]" />
+    <input id="eula_agreement_timestamp" type="hidden" name="submission[eula_agreement_timestamp]" />
+    <table class="formtable" style="width: 100%;">
+      <tr>
+        <td colspan="2">
+          Upload a file, or choose a file you&#39;ve already uploaded.
+            
+        </td>
+      </tr><tr>
+        <td><label id="attachmentLabel" for="attachment_uploaded_data">File:</label></td>
+        <td>
+          <button class="Button Button--link add_another_file_link">
+            <i class="icon-add" aria-hidden="true"></i>
+            Add Another File
+          </button>
+          <div id="submission_attachment_blank" class="submission_attachment" style="display: none;">
+            <input aria-labelledby="attachmentLabel" type="file" name="attachments[-1][uploaded_data]" class="input-file"/>
+            <a href="#" class="remove_attachment_link no-hover" style="display: none;"><i class="icon-end" aria-hidden="true"></i><span class="screenreader-only">remove empty attachment</span></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="font-size: 0.8em;">
+          <button class="Button Button--link toggle_uploaded_files_link">Click here to find a file you&#39;ve already uploaded</button><br/>
+          <div id="uploaded_files" style="display: none;" />
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <textarea class="submission_comment_textarea" placeholder="Comments..." title="Additional comments" name="submission[comment]" id="submission_comment">
+</textarea>
+        </td>
+      </tr>
+      
+
+      
+
+      <tr>
+        <td colspan="2" class='button-container'>
+          <button type="button" class='cancel_button btn'>Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submit_file_button">Submit Assignment</button>
+        </td>
+      </tr><tr style="display: none;">
+        <td colspan="2" style="text-align: center;">
+          Submitting... <img src=""/>
+        </td>
+      </tr>
+    </table>
+</form>
+
+
+
+    <style>
+    #google_docs_tree li.folder {
+      cursor: pointer;
+    }
+    #google_docs_tree li.file {
+      cursor: pointer;
+      -moz-border-radius: 3px;
+      width: 80%;
+      padding-right: 20px;
+    }
+    #google_docs_tree li.file:hover {
+      background-color: #eee;
+    }
+    ul.instTree li span.active {
+      background: none;
+    }
+    #google_docs_tree li.file.leaf.active {
+      background-color: #ddd;
+    }
+    #google_docs_tree li.file .filename {
+      float: left;
+      max-width: 98%;
+    }
+    #google_docs_tree li.file .popout {
+      float: right;
+    }
+    </style>
+          <form id="submit_google_doc_form" class="submit_assignment_form" action="/courses/17219/assignments/135472/submissions" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="4jWw0aiImnXjfUIbPp3kt9kGlHRRkBqmBDKmGP2+OZCFRP/p4u/UEJI+OktzrJDCsi3nImTRUNRWV59Smf1g9w==" />
+            <input value="google_doc" type="hidden" name="submission[submission_type]" id="submission_submission_type" />
+            <input value="" class="google_doc_id" type="hidden" name="google_doc[document_id]" id="google_doc_document_id" />
+            <table class="formtable" style="width: 100%;">
+              <tr>
+                <td style="padding-bottom: 10px;" colspan="2">
+                  Select the file from the list below.
+                  
+                  </td>
+              </tr><tr>
+                <td colspan="2">
+                  <div id="google_docs_container" style="height: 200px; overflow: auto;">
+                    <div style="text-align: center; margin: 10px;">
+                      <img alt="" src="https://du11hjcvx0uqb.cloudfront.net/dist/images/ajax-loader-bar-71e6988298.gif" />
+                    </div>
+                  </div>
+                </td>
+              </tr><tr>
+                <td colspan="2" style="text-align: center;">
+                  <div style="text-align: left;">
+                    <textarea class="submission_comment_textarea" placeholder="Comments..." title="Additional comments" name="submission[comment]" id="submission_comment">
+</textarea>
+                  </div>
+                </td>
+              </tr>
+              
+
+              <tr>
+                <td colspan="2" class='button-container'>
+                  <button type="button" class='cancel_button btn'>Cancel</button>
+                  <button type="submit" class="btn btn-primary">Submit Assignment</button>
+                </td>
+              </tr>
+            </table>
+            <div id="uploading_google_doc_message" style="display: none;">
+              Retrieving a copy of your Google Doc to submit for this assignment.  This may take a little while, depending on the size of the file...
+              <div style="text-align: center; margin: 10px;">
+                <img alt="" src="https://du11hjcvx0uqb.cloudfront.net/dist/images/ajax-loader-bar-71e6988298.gif" />
+              </div>
+            </div>
+</form>
+
+      <div id="submit_from_external_tool_form_172" style="padding: 5px 5px 0 5px;"></div>
+
+  </div>
+</div>
+
+
+
+
+
+  <div id="rubrics" style="margin-bottom: 10px;">
+    <div style="display: none;" id="rubric_parameters">
+      <input type="hidden" name="rubric_association[association_type]" value="Assignment"/>
+      <input type="hidden" name="rubric_association[association_id]" value="135472"/>
+      <input type="hidden" name="rubric_association[purpose]" value="grading"/>
+    </div>
+    
+<div id="rubric_long_description_dialog" style="display: none;">
+  <div class="editing">
+    <form id="edit_criterion_form" class="no-margin-bottom">
+      <div>
+        <label class="rating_form_label">Description
+          <textarea class="description" rows="1" name="description"></textarea>
+        </label>
+      </div>
+      <div>
+        <label class="rating_form_label">Long Description
+          <textarea class="long_description" rows="4" name="long_description"></textarea>
+        </label>
+      </div>
+      <div class="button-container">
+        <button type="button" class="btn btn button-secondary cancel_button">Cancel</button>
+        <button type="button" class="btn save_button btn-primary">Update Criterion</button>
+      </div>
+    </form>
+  </div>
+  <div class="displaying">
+    <div class="long_description">
+    </div>
+  </div>
+</div>
+<div id="rubric_criterion_comments_dialog" style="display: none;">
+  <div
+    class="criterion_description"
+    style="border-bottom: 1px solid #ccc; padding: 5px 0; font-size: 1.2em; font-weight: bold; margin-bottom: 5px;"
+    tabindex="-1"
+  ></div>
+  <div class="editing">
+    <label for="criterion_comments_textarea">
+      Additional Comments:
+    </label>
+    <textarea
+      id="criterion_comments_textarea"
+      class="criterion_comments"
+      name="criterion_comments"
+      style="width: 370px;"></textarea>
+    <div class="button-container">
+      <button type="button" class="btn btn button-secondary cancel_button">Cancel</button>
+      <button type="button" class="btn save_button">Update Comments</button>
+    </div>
+  </div>
+  <div class="displaying">
+    Additional Comments:
+    <div class="criterion_comments" style="margin-top: 10px;">
+    </div>
+  </div>
+</div>
+<div id="rubric_rating_dialog" style="display: none;">
+  <div class="description" style="border-bottom: 1px solid #ccc; padding: 5px 0; font-size: 1.2em; font-weight: bold; margin-bottom: 5px;">
+    <span id="edit_rating_form_criterion_description"></span>
+  </div>
+  <div class="editing">
+    <form id="edit_rating_form" class="no-margin-bottom">
+      <div class="toggle_for_hide_points">
+        <div><label id='rating_form_score_label' class="rating_form_label">Rating Score</label></div>
+        <span id='rating_form_max_score_label' hidden>Rating max score</span>
+        <input id="points" aria-labelledby="rating_form_score_label" type="text" size="2" name="points" class="no-margin-bottom span1" />
+        <span class="range_rating">to >
+          <input aria-label="Rating min score" type="text" size="2" name="min_points" class="no-margin-bottom span1 min_points" placeholder="min"/>
+        </span>pts
+      </div>
+      <div>
+        <label for="rating_form_title" class="rating_form_label">Rating Title</label>
+        <input id="rating_form_title" type="text" class="rating_description" style="width: 90%;" name="description"/>
+      </div>
+      <div>
+        <label for="rating_form_description" class="rating_form_label">Rating Description</label>
+        <textarea id="rating_form_description" rows="4" style="width: 90%;" class="rating_long_description" name="rating_long_description" form="edit_rating_form"></textarea>
+      </div>
+      <div class="button-container">
+        <button type="button" class="btn button-secondary cancel_button">Cancel</button>
+        <button type="button" class="btn btn-primary save_button ok_button">Update Rating</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  </div>
+  
+<div
+  class="rubric_container rubric  "
+  id="default_rubric"
+  style="display: none;"
+>
+  <div class="screenreader-only"><h2>Rubric</h2></div>
+  <div class="rubric_title">
+    <div style="display: none;" class="links displaying pull-right">
+      <a
+        href="/courses/17219/rubrics/%7B%7B%20id%20%7D%7D"
+        class=" edit_rubric_link no-print no-hover"
+        style=""
+        title="Edit Rubric"
+        aria-label="Edit Rubric"
+        role="button"
+      ><i class="icon-edit standalone-icon"></i></a>
+      <a
+        href="https://canvas.uchicago.edu/search/rubrics?q="
+        class="find_rubric_link no-print no-hover"
+        style=""
+        title="Find Another Rubric"
+        aria-label="Find Another Rubric"
+        role="button"
+      ><i class="icon-search standalone-icon"></i></a>
+        <a
+          href="/courses/17219/rubric_associations/%7B%7B%20rubric_association_id%20%7D%7D"
+          class="delete_rubric_link no-print no-hover"
+          style=""
+          title="Delete Rubric"
+          aria-label="Delete Rubric"
+          role="button"
+        ><i class="icon-trash standalone-icon"></i></a>
+      <div style="display: none;">
+        <div class="use_for_grading">&nbsp;</div>
+        <div class="free_form_criterion_comments">&nbsp;</div>
+        <div class="hide_score_total">&nbsp;</div>
+        <div class="hide_outcome_results">&nbsp;</div>
+        <div class="hide_points">&nbsp;</div>
+        <div class="rubric_association_id">&nbsp;</div>
+        <div class="user_id">&nbsp;</div>
+        <div class="assessment_type"></div>
+        <a href="/courses/17219/rubric_associations/%7B%7B%20rubric_association_id%20%7D%7D/assessments/%7B%7B%20assessment_id%20%7D%7D" rel="nofollow" class="edit_assessment_link">&nbsp;</a>
+        <a href="/courses/17219/rubrics/%7B%7B%20rubric_id%20%7D%7D" class="edit_rubric_url">&nbsp;</a>
+          <a href="/courses/17219/rubric_associations/%7B%7B%20association_id%20%7D%7D" class="delete_rubric_url">&nbsp;</a>
+      </div>
+    </div>
+    <div style="float: right; font-size: 0.8em; display: none;" class="links displaying locked">
+      <span style="">Can&#39;t change a rubric once you&#39;ve started using it.</span>
+        <a href="/courses/17219/rubric_associations/%7B%7B%20association_id%20%7D%7D" class="delete_rubric_url" style="display: none;">&nbsp;</a>
+    </div>
+
+    <div class="editing" style="float: right;">
+      <a href="https://canvas.uchicago.edu/search/rubrics?q=" class="find_rubric_link icon-search" style="" title="Find Existing Rubric">Find a Rubric</a>
+    </div>
+    <div class="editing" style="text-align: left">
+      <label for="rubric-title">Title:</label>
+      <input id="rubric-title" type="text" class="no-margin-bottom" name="title" value="Some Rubric" style="width: 200px;" maxlength="255" aria-label="Title:"/>
+      <a href="https://canvas.uchicago.edu/search/rubrics?q=" style="display: none;"><img alt="" src="https://du11hjcvx0uqb.cloudfront.net/dist/images/find-6164443e2a.png" /> Find Rubric</a>
+    </div>
+    <div class="displaying">
+      <span class="title" tabindex="-1">Title</span>
+    </div>
+    <div class="has-assessments-warning" style="display: none;">
+      You&#39;ve already rated students with this rubric.  Any major changes could affect their assessment results.
+    </div>
+  </div>
+<table class="rubric_table">
+<caption>
+  <div class="screenreader-only">
+    <span class="title">Title</span>
+  </div>
+</caption>
+<thead>
+  <tr>
+    <th scope="col">Criteria</th>
+    <th scope="col">Ratings</th>
+    <th scope="col" class="toggle_for_hide_points ">
+      Pts
+    </th>
+  </tr>
+</thead>
+<tbody>
+  
+<tr id="criterion_blank" class="criterion blank  " style="display: none;">
+  <td class="criterion_description hover-container pad-box-micro">
+    <div class="container">
+      <div class="links editing">
+          <a href="#" class="edit_criterion_link"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit criterion description</span></a>
+        <a href="#" class="delete_criterion_link"><i class="icon-trash standalone-icon"></i><span class="screenreader-only">Delete criterion row</span></a>
+      </div>
+      <div class="description_content">
+        <span class="outcome_sr_content" aria-hidden="true">
+          <i class="learning_outcome_flag icon-outcomes" aria-hidden="true"></i>
+          <span class="screenreader-only">This criterion is linked to a Learning Outcome</span>
+        </span>
+        <span class="description description_title">Description of criterion</span>
+        <span class="learning_outcome_id" style="display: none;"></span>
+        <span class="criterion_id" style="display: none;"></span>
+          <div class="long_description small_description"></div>
+        <div style="display: none;" class="long_description_holder editing empty">
+          <a href="#" class="long_description_link hidden">view longer description</a>
+          <textarea class="long_description" aria-label="Long Description" style="display: none;"></textarea>
+        </div>
+        <div class="hide_when_learning_outcome ">
+          <div class="criterion_use_range_div editing toggle_for_hide_points ">
+            <label>Range
+              <input type="checkbox" class="criterion_use_range" /></label>
+          </div>
+        </div>
+        <div class="threshold toggle_for_hide_points ">
+          threshold:
+          <span class="mastery_points">5</span> pts
+        </div>
+      </div>
+
+    </div>
+  </td>
+  <td style="padding: 0;">
+      <table class="ratings" style=""><tr>
+          <td id="rating_blank"
+              class="rating edge_rating
+                
+                "
+          >
+            <div class="container">
+              <div class="rating-main">
+                  <div class="editing links">
+                    <a href="#" class="edit_rating_link"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit rating</span></a>
+                    <a href="#" class="delete_rating_link"><i class="icon-trash standalone-icon" ></i><span class="screenreader-only">Delete rating</span></a>
+                  </div>
+                  <div class="clear"></div>
+                <span class="nobr toggle_for_hide_points ">
+                  <span class="points">5</span>
+                  <span class="range_rating" style="display: none;">to ><span class="min_points">0</span></span> pts
+                </span>
+                <div class="description rating_description_value">Full Marks</div>
+                <div class="rating_long_description small_description"></div>
+                <span class="rating_id" style="display: none;">blank</span>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="#" class="add_rating_link_after" aria-label="Add rating"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </td>
+          <td id="rating_blank_2"
+              class="rating edge_rating
+                infinitesimal
+                "
+          >
+            <div class="container">
+              <div class="rating-main">
+                  <div class="editing links">
+                    <a href="#" class="edit_rating_link"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit rating</span></a>
+                    <a href="#" class="delete_rating_link"><i class="icon-trash standalone-icon" ></i><span class="screenreader-only">Delete rating</span></a>
+                  </div>
+                  <div class="clear"></div>
+                <span class="nobr toggle_for_hide_points ">
+                  <span class="points">0</span>
+                  <span class="range_rating" style="display: none;">to ><span class="min_points">0</span></span> pts
+                </span>
+                <div class="description rating_description_value">No Marks</div>
+                <div class="rating_long_description small_description"></div>
+                <span class="rating_id" style="display: none;">blank_2</span>
+              </div>
+            </div>
+          </td>
+      </tr></table>
+      <div style="display: none; font-size: 0.8em; margin: 5px;" class="custom_ratings">
+        This area will be used by the assessor to leave comments related to this criterion.
+      </div>
+  </td>
+  <td class="nobr points_form toggle_for_hide_points ">
+    <div class="editing" style="white-space: normal">
+      <span style="white-space: nowrap; font-size: 0.8em">
+          
+            <input
+              type="text"
+              aria-label="Points"
+              value="5"
+              class="criterion_points span1 no-margin-bottom"
+            />
+           pts
+      </span><br />
+    </div>
+    <div class="displaying">
+      <span style="white-space: nowrap;">
+        <span class="criterion_rating_points_holder" style="display: none;">
+          <span class="criterion_rating_points">&nbsp;</span> /
+        </span>
+        <span class="display_criterion_points">5</span> pts<br />
+      </span>
+    </div>
+    <div class="ignoring">
+      <span> -- </span>
+    </div>
+    <div class="criterion_comments">
+        <a href="#" class="no-hover criterion_comments_link" title="Additional Comments">
+          <img alt="Additional Comments" src="https://du11hjcvx0uqb.cloudfront.net/dist/images/rubric_comment-ddae8546ab.png" />
+        </a>
+        <div class="custom_rating" style="display: none;"></div>
+    </div>
+  </td>
+</tr>
+
+  <tr class="summary">
+    <td colspan="4">
+      <div class="total_points_holder toggle_for_hide_points "
+        style="float: right; ">
+        <span>Total Points:
+            <span class="rubric_total">
+              5
+            </span>
+ <span class="assessing">out of 5</span>        </span>
+      </div>
+      <div class="editing pull-left">
+        <span id="add_criterion_holder" class="criterion_link"></span>
+      </div>
+      <div class="clear"></div>
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
+<table style="display: none;">
+  <tr id="edit_rubric">
+    <td colspan="4">
+      <form id="edit_rubric_form" class="edit-rubric-form no-margin-bottom">
+        <div class="rubric_custom_ratings" style="">
+          <input type="checkbox" id="rubric_custom_rating" class="rubric_custom_rating" />
+          <label for="rubric_custom_rating">I&#39;ll write free-form comments when assessing students</label>
+        </div>
+          <div class="hide_points" style="">
+            <input type="checkbox" id="hide_points" class="hide_points_checkbox" />
+            <label for="hide_points">Remove points from rubric</label>
+          </div>
+          <div class="hide_outcome_results" style="">
+            <input type="checkbox" id="hide_outcome_results" class="hide_outcome_results_checkbox" />
+            <label for="hide_outcome_results">Don&#39;t post Outcomes results to Learning Mastery Gradebook</label>
+          </div>
+          <div class="rubric_grading" style="">
+            <input type="checkbox" id="grading_rubric" class="grading_rubric_checkbox" />
+            <label for="grading_rubric">Use this rubric for assignment grading</label>
+          </div>
+        <div class="totalling_rubric" style="">
+          <input type="checkbox" id="totalling_rubric" class="totalling_rubric_checkbox" />
+          <label for="totalling_rubric">Hide score total for assessment results</label>
+        </div>
+        <div class="ic-Action-header ic-Action-header--half-margin">
+          <div class="ic-Action-header__Primary">
+            <button type="button" class="Button cancel_button">Cancel</button>
+            <button type="submit" class="Button Button--primary save_button">Create Rubric</button>
+          </div>
+        </div>
+      </form>
+    </td>
+  </tr>
+</table>
+
+
+  <div id="assignment_external_tools"></div>
+
+  
+  <div id="sequence_footer" data-course-id="17219" data-asset-id="135472" data-asset-type="Assignment"></div>
+
+
+
+
+          </div>
+        </div>
+        <div id="right-side-wrapper" class="ic-app-main-content__secondary">
+          <aside id="right-side" role="complementary">
+            
+<div id="sidebar_content">
+
+    
+<div class="details">
+  <h3>Submission</h3>
+    <div class="header">
+        <i class="icon-check" aria-hidden="true"></i>
+        Submitted!
+    </div>
+  <div class="content">
+    <span class="">
+        Nov 11, 2018 at 10:31pm
+    </span>
+
+    <div>
+      <a href="/courses/17219/assignments/135472/submissions/70705">
+        Submission Details
+      </a>
+    </div>
+
+        <div>
+          <a href="/courses/17219/assignments/135472/submissions/70705?download=1892428">
+            Download Large Scale Data Methods PS3.html
+          </a>
+        </div>
+        <span class="assignment_presenter_for_submission" style="display: none;">pending_upload</span>
+        <span class="react_pill_container"></span>
+        <div>
+          <a href="/courses/17219/assignments/135472/submissions/70705?download=1892429">
+            Download Large Scale Data Methods PS3.ipynb
+          </a>
+        </div>
+        <span class="assignment_presenter_for_submission" style="display: none;">pending_upload</span>
+        <span class="react_pill_container"></span>
+        <div>
+          <a href="/courses/17219/assignments/135472/submissions/70705?download=1892430">
+            Download Screen Shot 2018-11-11 at 10.12.36 PM.png
+          </a>
+        </div>
+        <span class="assignment_presenter_for_submission" style="display: none;">processing</span>
+        <span class="react_pill_container"></span>
+
+    <div class="module">
+          <div>Grade: 8 <span style="font-size: 0.8em;">(10 pts possible)</span></div>
+          <div>Graded Anonymously: no</div>
+
+    </div>
+
+
+    <div class="comments module">
+        <h4>Comments: </h4>
+
+        
+          <div id="comment-357261" class="comment">
+            Task 1 Notes You probably don&#39;t want EMR_AutoScaling_DefaultRole set, which could feasibly expand the number of instances are using. Incorporating scaling behavior is something you should not with a strong understanding of that behavior. I&#39;d remove that flag. 
+
+Also, note that you&#39;re setting EBS storage here that you&#39;re probably not really using (EMR on these AMIs can just use instance store). 
+
+I would use an additional master security group instead of Managed Security Groups. Essentially you want the defaults that AWS has for EMR, but then you’d like to additional open some ports. You can do this with:
+
+--AdditionalMasterSecurityGroups=&quot;sg-yourSGcode&quot;
+
+Lastly, we&#39;re really closer to the region us-east-2, and working in that might be cheaper under various circumstances.
+
+Task 2 Notes
+
+The first thing you should do in your Spark session is set configuration settings, and you can set all of your configurations at once with:
+
+spark = SparkSession.builder \
+     .appName(&quot;PySparkExploration&quot;) \
+     .config(&#39;spark.executor.instances&#39;, &#39;6&#39;) \ 
+     .config(&#39;spark.executor.memory&#39;, &#39;10G&#39;) \
+     .config(&#39;spark.executor.cores&#39;, &#39;2&#39;) \
+     .getOrCreate()&quot;
+
+Changing configurations settings once the Spark session has started (as you do in this notebook) could potentially not change the underlying settings unless you stop/restart the spark context.
+
+Dataframe names – For the sake of all your future colleagues, I would strongly urge you to use more intuitive dataframe names. Like say ‘dime’, ‘vote’ and ‘text’ instead of df1 df2 and df3.
+
+Windowing function – ranking most liberal to conservative candidates (according to their contributors cf scores) by election is a sensible window function, well done. 
+
+UDF – it’s not clear from this code or the notebook that this code ran, given that no data appears below the .show() action. Not entirely sure what you were going for here.
+
+Task 3 – My intention was that you would identify an example of these in your code. E.g. I was hoping you would look at your window function and explain why there was a wide transformation inherent there.
+
+“the storage level of my dataframe goes down when I checkpoint the data” Is not really a sensible explanation. Checkpointing a dataframe changes the storage level in a way that increases its reliability (often writing to disk in addition to persisting to memory). Looking at the storage level, then running a checkpoint, then looking at the storage level again would have been the easiest way to see for yourself, and then describe what a checkpoint was doing.
+            <div class="comment_attachments">
+            </div>
+            <div class="signature" style="font-size: 0.8em; text-align: right; color: #888;">
+              Alex Engler, Nov 21, 2018 at 10:04pm
+            </div>
+          </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+    <div style="display:none;"><!-- Everything inside of this should always stay hidden -->
+        <div id="page_view_id">45a4f8a3-f00e-4c31-a696-2601b15c075b</div>
+    </div>
+  <div id='aria_alerts' class='hide-text affix' role="alert" aria-live="assertive"></div>
+  <div id='StudentTray__Container'></div>
+  
+
+<script>
+  INST = {"environment":"production","allowMediaComments":true,"kalturaSettings":{"domain":"nv.instructuremedia.com","resource_domain":"nv.instructuremedia.com","rtmp_domain":"iad.rtmp.instructuremedia.com","partner_id":"9","subpartner_id":"0","player_ui_conf":"0","kcw_ui_conf":"0","upload_ui_conf":"0","max_file_size_bytes":534773760,"do_analytics":false,"hide_rte_button":false,"js_uploader":true},"googleAnalyticsAccount":"UA-9138420-1","logPageViews":true,"maxVisibleEditorButtons":3,"editorButtons":[{"name":"Box","id":172,"url":"https://www.edu-apps.org/box/","icon_url":"https://www.edu-apps.org/assets/lti_box_engine/icon.png","canvas_icon_class":null,"width":430,"height":200},{"name":"LibApps Library Content","id":185,"url":"https://uchicago.libapps.com/libapps/lti_launch_manual.php","icon_url":"https://libapps.s3.amazonaws.com/apps/libapps/images/favicon_lti.png","canvas_icon_class":null,"width":800,"height":600},{"name":"Panopto Video Pilot","id":1091,"url":"https://universityofchicago.hosted.panopto.com/Panopto/LTI/LTI.aspx","icon_url":"https://universityofchicago.hosted.panopto.com/Panopto/images/panopto_logo_globe.png","canvas_icon_class":null,"width":900,"height":700},{"name":"Embed Kaltura Media","id":1129,"url":"https://1090132.kaf.kaltura.com/browseandembed/index/browseandembed","icon_url":"https://cdnsecakmi.kaltura.com/content/static/kalturalogo.png","canvas_icon_class":null,"width":1100,"height":600}]};
+  ENV = {"ASSET_HOST":"https://du11hjcvx0uqb.cloudfront.net","active_brand_config_json_url":"https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/308565912cd158bfb6ce5990a41b6af6/variables-750d72b9d3e5d522f965bf904110c132.json","url_to_what_gets_loaded_inside_the_tinymce_editor_css":["https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/308565912cd158bfb6ce5990a41b6af6/variables-750d72b9d3e5d522f965bf904110c132.css","https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/new_styles_normal_contrast/bundles/what_gets_loaded_inside_the_tinymce_editor-00732f6556.css"],"url_for_high_contrast_tinymce_editor_css":["https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/default/variables-high_contrast-750d72b9d3e5d522f965bf904110c132.css","https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/new_styles_high_contrast/bundles/what_gets_loaded_inside_the_tinymce_editor-077da306dd.css"],"current_user_id":"70705","current_user_roles":["user","student"],"current_user_disabled_inbox":false,"files_domain":"cluster35.canvas-user-content.com","DOMAIN_ROOT_ACCOUNT_ID":23490000000000001,"k12":false,"use_responsive_layout":false,"help_link_name":"Help","help_link_icon":"help","use_high_contrast":false,"LTI_LAUNCH_FRAME_ALLOWANCES":["geolocation","microphone","camera","midi","encrypted-media"],"DEEP_LINKING_POST_MESSAGE_ORIGIN":"https://canvas.uchicago.edu","DEEP_LINKING_LOGGING":null,"SETTINGS":{"open_registration":true,"eportfolios_enabled":true,"collapse_global_nav":false,"show_feedback_link":true,"enable_profiles":true},"ARC_RECORDING_FEATURE_ENABLED":true,"current_user":{"id":"70705","display_name":"Saptarshi Ghose","avatar_image_url":"https://canvas.uchicago.edu/images/messages/avatar-50.png","html_url":"https://canvas.uchicago.edu/about/70705","avatar_is_fallback":true},"page_view_update_url":"/page_views/45a4f8a3-f00e-4c31-a696-2601b15c075b?page_view_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpIjoiNDVhNGY4YTMtZjAwZS00YzMxLWE2OTYtMjYwMWIxNWMwNzViIiwidSI6MjM0OTAwMDAwMDAwNzA3MDUsImMiOiIyMDE5LTAyLTIzVDEwOjE3OjE2Ljk0WiJ9.SX8qFq1jVcXEb6biNgm_Ns27D8KkNvErM2ciHlw8Mak","context_asset_string":"course_17219","ping_url":"https://canvas.uchicago.edu/api/v1/courses/17219/ping","TIMEZONE":"America/Chicago","CONTEXT_TIMEZONE":"America/Chicago","LOCALE":"en","BIGEASY_LOCALE":"en_US","FULLCALENDAR_LOCALE":"en","MOMENT_LOCALE":"en","RICH_CONTENT_SERVICE_ENABLED":true,"RICH_CONTENT_APP_HOST":"rich-content-iad.inscloudgate.net","RICH_CONTENT_CDN_HOST":"dvgcns7dz7zc.cloudfront.net/rce_service/versions/","RICH_CONTENT_SKIP_SIDEBAR":null,"JWT":"ZXlKaGJHY2lPaUprYVhJaUxDSmxibU1pT2lKQk1qVTJSME5OSW4wLi5UMEZuaUVXMS1UUTBhU2NOLldkU1MxczRpUm9XeER6R0xvRy00MkV3ekZQaXAtZ1lhVTR2d1MtSHpTMHBEYUNmSS1oVEJ5RzlpLWtFNE9Kb0FnZjZiOVlnQzRSb091blNJWjlIVkdEb2s3WDFXQWlxclpQclJ2M0s3Sy02TXZiRVdRUGI1ODc3SkVVblBReS1JendmeFh4bWdqQmtrcVBURngzdF9leVRhR2tXTVRMS3VQOFZ0R1EwWWNNLXdOeFM0LU5wTC0yQTJZam1JQjlZTlRSbUpDV1kyZGc2Ml9HRlRCYkVldGFob1g4alFiZndkYy1mdGVvWklwTGs2aEp3V0gtcTlRQXQ2Yk9RWnNDMzA1N2t0ejFIUm1EbUJlWnpoZm55cTd4elg5dFJCMi00UjFhUlRyb19NRFBxTHlmNzJlNnpla3ZpTTIybmZCVzh5aEY0SWxpcWFoLVdCaDdvdkpGQzZxelFsb1pmX0VkdVp2LWlHLVpKLTR5NGNMa1llMEpSTWlpelExeC14UUNNN2F6ZmhuY0ZSSEY1T2dqMDlDLTNhWkVHVFlBWXBFdFFCMEVieTYtTlQ0Nlh5emdaUXJvX3RLVUhLbE5BUXB3QjdKMHZydHZXSkdDY2tKXzFVMjk0VmZ2dW95dU5HSWZPTnVtdnFfN3hod3ZrbzdxSjljRFFpUXFndW9SNFpGNFNRM0lxNDhLdHc4ZEhrWGFHWWtlb2dKcnZjN21feGd5Y29XUEV4RlVUdWtvaGhOTmZOWXB0MURNLVFOR2FWMXVRclZCVjJHZjZLWU94eWlhNWhVdDRrWEs4NXdMNmJSSkhUTHNrXzBScW9tcWRqRnlNV1dfWTE0QlR5bHRFZ1kyRzNpM2RfMGZiZURaT2FWWF9aM3AyM01nR0lmMHpzRlowMEdrRUxQWHp6LWZhZG4xSUkwRXFwSU1Ib1oxTmpnQUZWcEY0SnRsOC1NamZpQjBzNnp6dHhzYlVzTWRORkNaSzNHVkNMeXlNUUpYSkxqZk10Q3RYbGZVTHBRNVRFd25BLXYzdlNxalFhWF81YkEzcklRS3FubkJaRWIyLTUyRXFfX1RDVXY3ay5MYkszQ2JLazFuU0VaMmRpVWlhbWxR","RICH_CONTENT_CAN_UPLOAD_FILES":false,"RICH_CONTENT_FILES_TAB_DISABLED":true,"ROOT_OUTCOME_GROUP":{"id":"4718","title":"CAPP 30525 1 (Autumn 2018) Large Scale Data Methods","vendor_guid":null,"url":"/api/v1/courses/17219/outcome_groups/4718","subgroups_url":"/api/v1/courses/17219/outcome_groups/4718/subgroups","outcomes_url":"/api/v1/courses/17219/outcome_groups/4718/outcomes","can_edit":false,"import_url":"/api/v1/courses/17219/outcome_groups/4718/import","context_id":"17219","context_type":"Course","description":null},"COURSE_ID":17219,"ASSIGNMENT_ID":135472,"EXTERNAL_TOOLS":[{"id":"172","domain":"edu-apps.org","url":"https://www.edu-apps.org/box/","consumer_key":"e8b042ad-e058-4f75-9cd5-6f8fd703341a","name":"Box","description":"Embed files from Box","created_at":"2016-09-15T19:38:46Z","updated_at":"2016-10-24T18:02:12Z","privacy_level":"anonymous","custom_fields":{},"workflow_state":"anonymous","vendor_help_link":null,"account_navigation":null,"similarity_detection":null,"assignment_edit":null,"assignment_menu":null,"assignment_selection":null,"assignment_view":null,"collaboration":null,"course_assignments_menu":null,"course_home_sub_navigation":null,"course_navigation":{"default":"disabled","enabled":"true","visibility":"public","label":"Box","selection_width":430,"selection_height":200,"icon_url":"https://www.edu-apps.org/assets/lti_box_engine/icon.png"},"course_settings_sub_navigation":null,"discussion_topic_menu":null,"editor_button":{"enabled":"true","label":"Box","selection_width":430,"selection_height":200,"icon_url":"https://www.edu-apps.org/assets/lti_box_engine/icon.png"},"file_menu":null,"global_navigation":null,"homework_submission":{"enabled":"true","label":"Box","selection_width":430,"selection_height":200,"icon_url":"https://www.edu-apps.org/assets/lti_box_engine/icon.png"},"link_selection":null,"migration_selection":null,"module_menu":null,"post_grades":null,"quiz_menu":null,"resource_selection":{"enabled":"true","label":"Box","selection_width":430,"selection_height":200,"icon_url":"https://www.edu-apps.org/assets/lti_box_engine/icon.png"},"tool_configuration":null,"user_navigation":{"enabled":"true","visibility":"public","label":"Box","selection_width":430,"selection_height":200,"icon_url":"https://www.edu-apps.org/assets/lti_box_engine/icon.png"},"wiki_page_menu":null,"selection_width":430,"selection_height":200,"icon_url":"https://www.edu-apps.org/assets/lti_box_engine/icon.png","not_selectable":false}],"EULA_URL":null,"PERMISSIONS":{"context":{"read_as_admin":false,"manage_assignments":false},"assignment":{"update":false,"submit":true}},"PREREQS":{},"SUBMIT_ASSIGNMENT":{"ALLOWED_EXTENSIONS":[],"ID":135472,"GROUP_ID_FOR_USER":null},"badge_counts":{"submissions":0},"notices":[]};
+</script>
+
+<script src="https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/navigation_header.bundle-71fab862aa.js" defer="defer"></script>
+<script src="https://instructure-uploads.s3.amazonaws.com/account_23490000000000001/attachments/1727182/09-18-2018%20GoogleAnalytics.js" defer="defer"></script>
+
+</div> <!-- #application -->
+</body>
+</html>
